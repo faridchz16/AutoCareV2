@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PaymentMethod;
 use App\Models\ServiceDate;
 use App\Models\ServiceRequest;
 use App\Models\ServiceType;
 use App\Models\User;
+use App\Models\Workshop;
 use Carbon\Carbon;
 
 class AdminDashboardController extends Controller
@@ -30,7 +30,8 @@ class AdminDashboardController extends Controller
         $availableDates = ServiceDate::where('status', 'disponible')->count();
         $blockedDates = ServiceDate::where('status', 'no_disponible')->count();
 
-        $paymentMethods = PaymentMethod::where('status', 'activo')->count();
+        $totalWorkshops = Workshop::count();
+        $activeWorkshops = Workshop::where('status', 'activo')->count();
 
         $totalRequests = ServiceRequest::count();
         $pendingRequests = ServiceRequest::where('status', 'pendiente')->count();
@@ -59,7 +60,7 @@ class AdminDashboardController extends Controller
             ->take(5)
             ->get();
 
-        $latestPayments = PaymentMethod::latest()
+        $latestWorkshops = Workshop::latest()
             ->take(4)
             ->get();
 
@@ -69,7 +70,8 @@ class AdminDashboardController extends Controller
             'activeServices',
             'availableDates',
             'blockedDates',
-            'paymentMethods',
+            'totalWorkshops',
+            'activeWorkshops',
             'totalRequests',
             'pendingRequests',
             'processRequests',
@@ -78,7 +80,7 @@ class AdminDashboardController extends Controller
             'latestServices',
             'latestDates',
             'latestRequests',
-            'latestPayments'
+            'latestWorkshops'
         ));
     }
 }

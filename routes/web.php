@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ServiceTypeController;
 use App\Http\Controllers\Admin\ServiceDateController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\VehicleTypeController;
+use App\Http\Controllers\Admin\WorkshopController;
 use App\Http\Controllers\Admin\ServiceRequestController as AdminServiceRequestController;
 
 use App\Http\Controllers\Client\ClientDashboardController;
@@ -53,21 +54,20 @@ Route::middleware([
             Route::resource('services', ServiceTypeController::class)
                 ->except(['destroy']);
 
-
             Route::resource('service-dates', ServiceDateController::class)
                 ->parameters([
                     'service-dates' => 'serviceDate'
                 ])
                 ->except(['destroy']);
 
-
             Route::resource('payment-methods', PaymentMethodController::class)
                 ->except(['destroy']);
-
 
             Route::resource('vehicle-types', VehicleTypeController::class)
                 ->except(['destroy']);
 
+            Route::resource('workshops', WorkshopController::class)
+                ->except(['destroy']);
 
             Route::get('service-requests', [AdminServiceRequestController::class, 'index'])
                 ->name('service-requests.index');
@@ -112,8 +112,12 @@ Route::middleware([
 
             Route::get('payments', [ClientPaymentController::class, 'index'])
                 ->name('payments.index');
-            Route::post('payments/{serviceRequest}/pay', [ClientPaymentController::class, 'pay'])
-                ->name('payments.pay');
+
+            Route::get('payments/{serviceRequest}/checkout', [ClientPaymentController::class, 'checkout'])
+                ->name('payments.checkout');
+
+            Route::post('payments/{serviceRequest}/process', [ClientPaymentController::class, 'process'])
+                ->name('payments.process');
 
             Route::get('payments/{serviceRequest}/success', [ClientPaymentController::class, 'success'])
                 ->name('payments.success');

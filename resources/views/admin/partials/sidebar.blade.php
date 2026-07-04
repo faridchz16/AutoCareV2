@@ -58,13 +58,13 @@
             <span>Tipos de vehículos</span>
         </a>
 
-        <a href="{{ route('admin.payment-methods.index') }}"
+        <a href="{{ route('admin.workshops.index') }}"
            class="flex items-center gap-4 rounded-2xl px-6 py-4 transition duration-300
-                  {{ request()->routeIs('admin.payment-methods.*')
+                  {{ request()->routeIs('admin.workshops.*')
                         ? 'bg-gradient-to-r from-blue-600 to-blue-500 shadow-xl shadow-blue-900/40 text-white'
                         : 'text-slate-200 hover:bg-blue-600/20 hover:text-cyan-300' }}">
-            <x-admin.icon-card />
-            <span>Formas de pago</span>
+            <span class="w-6 h-6 text-xl flex items-center justify-center">⌂</span>
+            <span>Sedes / Talleres</span>
         </a>
 
         <a href="{{ route('admin.service-requests.index') }}"

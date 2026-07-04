@@ -38,15 +38,15 @@
                 </a>
 
                 <a href="{{ route('admin.vehicle-types.index') }}"
-                    class="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 font-bold text-white hover:from-cyan-600 hover:to-blue-700 transition shadow-lg">
+                   class="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 font-bold text-white hover:from-cyan-600 hover:to-blue-700 transition shadow-lg">
                     <span class="w-6 h-6 text-xl flex items-center justify-center">▣</span>
                     Tipos de vehículos
                 </a>
 
-                <a href="{{ route('admin.payment-methods.index') }}"
+                <a href="{{ route('admin.workshops.index') }}"
                    class="flex items-center gap-3 rounded-2xl bg-[#0284c7] px-6 py-4 font-bold text-white hover:bg-[#0369a1] transition shadow-lg">
-                    <x-admin.icon-card />
-                    Formas de pago
+                    <span class="w-6 h-6 text-xl flex items-center justify-center">⌂</span>
+                    Sedes / Talleres
                 </a>
 
                 <a href="{{ route('admin.service-requests.index') }}"
@@ -126,12 +126,12 @@
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl hover:-translate-y-1 transition">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-800 flex items-center justify-center mb-5 shadow-lg shadow-sky-900/40">
-                <x-admin.icon-card />
+                <span class="text-2xl">⌂</span>
             </div>
 
-            <p class="text-slate-300">Formas de pago activas</p>
-            <h2 class="mt-2 text-5xl font-extrabold text-white">{{ $paymentMethods }}</h2>
-            <p class="mt-2 text-cyan-300">Métodos habilitados</p>
+            <p class="text-slate-300">Sedes registradas</p>
+            <h2 class="mt-2 text-5xl font-extrabold text-white">{{ $totalWorkshops ?? 0 }}</h2>
+            <p class="mt-2 text-cyan-300">{{ $activeWorkshops ?? 0 }} activas</p>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl hover:-translate-y-1 transition">
@@ -274,21 +274,24 @@
         </div>
 
         <div class="rounded-[32px] bg-[#132b49]/90 border border-cyan-400/10 p-8 shadow-xl">
-            <h2 class="text-2xl font-extrabold text-white mb-5">Formas de pago</h2>
+            <h2 class="text-2xl font-extrabold text-white mb-5">Sedes / Talleres</h2>
 
             <div class="space-y-4">
-                @forelse($latestPayments as $method)
+                @forelse(($latestWorkshops ?? collect()) as $workshop)
                     <div class="rounded-2xl bg-[#082344]/90 border border-cyan-400/10 p-4">
-                        <p class="text-white font-bold">{{ $method->name }}</p>
+                        <p class="text-white font-bold">{{ $workshop->name }}</p>
+                        <p class="text-slate-400 text-sm mt-1">
+                            {{ $workshop->address }}
+                        </p>
 
-                        @if($method->status === 'activo')
-                            <p class="text-cyan-300 text-sm mt-1">Activo</p>
+                        @if($workshop->status === 'activo')
+                            <p class="text-cyan-300 text-sm mt-1">Activa</p>
                         @else
-                            <p class="text-red-300 text-sm mt-1">Inactivo</p>
+                            <p class="text-red-300 text-sm mt-1">Inactiva</p>
                         @endif
                     </div>
                 @empty
-                    <p class="text-slate-300">No hay formas de pago registradas.</p>
+                    <p class="text-slate-300">No hay sedes o talleres registrados.</p>
                 @endforelse
             </div>
         </div>

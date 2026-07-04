@@ -32,70 +32,99 @@
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-        <section class="xl:col-span-2 space-y-8">
+        <section class="xl:col-span-2 rounded-[32px] bg-[#132b49]/90 border border-cyan-400/10 shadow-xl p-8">
 
-            <div class="rounded-[32px] bg-[#132b49]/90 border border-cyan-400/10 shadow-xl p-8">
-                <h2 class="text-2xl font-bold text-white mb-6">
-                    Información del servicio
-                </h2>
+            <div class="flex items-start gap-4 mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                    <x-admin.icon-tool />
+                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-cyan-400 font-bold uppercase tracking-widest">
+                        Servicio asignado
+                    </p>
 
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Cliente</p>
-                        <p class="text-white font-bold mt-2">
-                            {{ $serviceRequest->customer->name ?? 'Cliente no disponible' }}
+                    <h2 class="text-3xl font-extrabold text-white mt-2">
+                        {{ $serviceRequest->serviceType->name ?? 'Servicio no disponible' }}
+                    </h2>
+
+                    <p class="text-slate-300 mt-1">
+                        Cliente: {{ $serviceRequest->customer->name ?? 'Cliente no disponible' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
+                    <p class="text-cyan-300 font-semibold">Vehículo</p>
+
+                    <p class="text-white font-bold text-xl mt-2">
+                        {{ $serviceRequest->vehicle_brand }} {{ $serviceRequest->vehicle_model }}
+                    </p>
+
+                    <p class="text-slate-400 text-sm mt-1">
+                        Placa: {{ $serviceRequest->vehicle_plate }}
+                    </p>
+                </div>
+
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
+                    <p class="text-cyan-300 font-semibold">Kilometraje</p>
+
+                    <p class="text-white font-bold text-xl mt-2">
+                        {{ $serviceRequest->current_mileage ? number_format($serviceRequest->current_mileage) . ' km' : 'No registrado' }}
+                    </p>
+                </div>
+
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
+                    <p class="text-cyan-300 font-semibold">Fecha programada</p>
+
+                    @if($serviceRequest->serviceDate)
+                        <p class="text-white font-bold text-xl mt-2">
+                            {{ \Carbon\Carbon::parse($serviceRequest->serviceDate->available_date)->format('d/m/Y') }}
                         </p>
-                    </div>
 
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Servicio</p>
-                        <p class="text-white font-bold mt-2">
-                            {{ $serviceRequest->serviceType->name ?? 'Servicio no disponible' }}
-                        </p>
-                    </div>
-
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Vehículo</p>
-                        <p class="text-white font-bold mt-2">
-                            {{ $serviceRequest->vehicle_brand }} {{ $serviceRequest->vehicle_model }}
-                        </p>
                         <p class="text-slate-400 text-sm mt-1">
-                            Placa: {{ $serviceRequest->vehicle_plate }}
+                            {{ substr($serviceRequest->serviceDate->start_time, 0, 5) }}
+                            -
+                            {{ substr($serviceRequest->serviceDate->end_time, 0, 5) }}
                         </p>
-                    </div>
+                    @else
+                        <p class="text-slate-300 mt-2">Fecha no disponible</p>
+                    @endif
+                </div>
 
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Kilometraje</p>
-                        <p class="text-white font-bold mt-2">
-                            {{ $serviceRequest->current_mileage ? number_format($serviceRequest->current_mileage) . ' km' : 'No registrado' }}
-                        </p>
-                    </div>
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
+                    <p class="text-cyan-300 font-semibold">Forma de pago</p>
 
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Fecha programada</p>
+                    <p class="text-white font-bold text-xl mt-2">
+                        {{ $serviceRequest->paymentMethod->name ?? 'No registrada' }}
+                    </p>
 
-                        @if($serviceRequest->serviceDate)
-                            <p class="text-white font-bold mt-2">
-                                {{ \Carbon\Carbon::parse($serviceRequest->serviceDate->available_date)->format('d/m/Y') }}
-                            </p>
-                            <p class="text-slate-400 text-sm mt-1">
-                                {{ substr($serviceRequest->serviceDate->start_time, 0, 5) }}
-                                -
-                                {{ substr($serviceRequest->serviceDate->end_time, 0, 5) }}
-                            </p>
-                        @else
-                            <p class="text-slate-300 mt-2">Fecha no disponible</p>
-                        @endif
-                    </div>
+                    <p class="text-slate-400 text-sm mt-1">
+                        Monto: S/. {{ number_format($serviceRequest->amount ?? 0, 2) }}
+                    </p>
+                </div>
 
-                    <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6">
-                        <p class="text-cyan-300 font-semibold">Forma de pago</p>
-                        <p class="text-white font-bold mt-2">
-                            {{ $serviceRequest->paymentMethod->name ?? 'No registrada' }}
-                        </p>
-                    </div>
+            </div>
 
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-white mb-3">
+                    Observaciones del cliente
+                </h3>
+
+                <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-5 text-slate-300">
+                    {{ $serviceRequest->customer_notes ?: 'No se registraron observaciones.' }}
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-white mb-3">
+                    Observaciones del administrador
+                </h3>
+
+                <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-5 text-slate-300">
+                    {{ $serviceRequest->admin_notes ?: 'Todavía no existen observaciones.' }}
                 </div>
             </div>
 
@@ -123,7 +152,7 @@
                     {{ str_replace('_', ' ', ucfirst($serviceRequest->status)) }}
                 </span>
 
-                <div class="mt-6 text-sm text-slate-300">
+                <div class="mt-6 rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-5 text-sm text-slate-300">
                     @if($serviceRequest->mechanic_finished)
                         <p class="text-green-300 font-semibold">
                             Trabajo finalizado por el mecánico.

@@ -5,6 +5,7 @@
 <div class="space-y-8">
 
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
         <div>
             <p class="text-cyan-400 font-bold uppercase tracking-widest">
                 Módulo administrativo
@@ -12,24 +13,25 @@
 
             <div class="flex items-center gap-4 mt-2">
                 <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
-                    <x-admin.icon-tool />
+                    <x-admin.icon-workshop />
                 </div>
 
                 <h1 class="text-4xl font-extrabold text-white">
-                    Gestión de servicios
+                    Gestión de sedes y talleres
                 </h1>
             </div>
 
             <p class="text-slate-300 mt-3">
-                Administre los servicios vehiculares disponibles para los clientes.
+                Administre las sedes o talleres disponibles para la atención de servicios vehiculares.
             </p>
         </div>
 
-        <a href="{{ route('admin.services.create') }}"
+        <a href="{{ route('admin.workshops.create') }}"
            class="inline-flex items-center gap-3 justify-center rounded-2xl bg-cyan-500 px-6 py-4 text-white font-bold hover:bg-cyan-600 transition">
-            <x-admin.icon-plus />
-            Nuevo servicio
+            <x-admin.icon-workshop />
+            Nueva sede
         </a>
+
     </div>
 
     @if(session('success'))
@@ -38,53 +40,47 @@
         </div>
     @endif
 
-    @if(session('error'))
-        <div class="rounded-2xl bg-red-500/10 px-5 py-4 text-red-300 border border-red-400/20">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <div class="flex items-center justify-between">
-                <p class="text-slate-300">Total servicios</p>
+                <p class="text-slate-300">Total registradas</p>
                 <div class="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center text-cyan-300">
-                    <x-admin.icon-tool />
+                    <x-admin.icon-workshop />
                 </div>
             </div>
 
             <h2 class="text-5xl font-extrabold text-white mt-3">
-                {{ $totalServices }}
+                {{ $totalWorkshops }}
             </h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <div class="flex items-center justify-between">
-                <p class="text-slate-300">Activos</p>
+                <p class="text-slate-300">Activas</p>
                 <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
             </div>
 
             <h2 class="text-5xl font-extrabold text-cyan-300 mt-3">
-                {{ $activeServices }}
+                {{ $activeWorkshops }}
             </h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <div class="flex items-center justify-between">
-                <p class="text-slate-300">Inactivos</p>
+                <p class="text-slate-300">Inactivas</p>
                 <span class="w-3 h-3 rounded-full bg-red-400"></span>
             </div>
 
             <h2 class="text-5xl font-extrabold text-red-300 mt-3">
-                {{ $inactiveServices }}
+                {{ $inactiveWorkshops }}
             </h2>
         </div>
 
     </div>
 
     <form method="GET"
-          action="{{ route('admin.services.index') }}"
+          action="{{ route('admin.workshops.index') }}"
           class="rounded-[28px] bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl flex flex-col md:flex-row gap-4">
 
         <div class="relative flex-1">
@@ -96,7 +92,7 @@
                 type="text"
                 name="search"
                 value="{{ request('search') }}"
-                placeholder="Buscar servicio o descripción..."
+                placeholder="Buscar sede, dirección o teléfono..."
                 class="w-full rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white placeholder-slate-400 pl-14 pr-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 outline-none">
         </div>
 
@@ -105,8 +101,8 @@
             class="rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white px-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500">
 
             <option value="">Todos los estados</option>
-            <option value="activo" @selected(request('status') === 'activo')>Activos</option>
-            <option value="inactivo" @selected(request('status') === 'inactivo')>Inactivos</option>
+            <option value="activo" @selected(request('status') == 'activo')>Activas</option>
+            <option value="inactivo" @selected(request('status') == 'inactivo')>Inactivas</option>
 
         </select>
 
@@ -117,7 +113,7 @@
             Buscar
         </button>
 
-        <a href="{{ route('admin.services.index') }}"
+        <a href="{{ route('admin.workshops.index') }}"
            class="rounded-2xl bg-slate-700 px-6 py-3 text-white font-semibold text-center hover:bg-slate-600 transition">
             Limpiar
         </a>
@@ -128,83 +124,107 @@
 
         <div class="px-6 py-5 border-b border-cyan-400/10 flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
-                <x-admin.icon-tool />
+                <x-admin.icon-workshop />
             </div>
 
             <h2 class="text-xl font-bold text-white">
-                Servicios registrados
+                Sedes y talleres registrados
             </h2>
         </div>
 
-        <div class="divide-y divide-cyan-400/10">
+        <div class="p-6">
 
-            @forelse($services as $service)
+            @forelse($workshops as $workshop)
 
-                <div class="px-6 py-5 hover:bg-white/5 transition">
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6 mb-5 hover:-translate-y-1 hover:border-cyan-400/30 hover:shadow-xl hover:shadow-cyan-900/20 transition">
 
-                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
 
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
-                                <x-admin.icon-tool />
+                            <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
+                                <x-admin.icon-workshop />
                             </div>
 
                             <div>
                                 <div class="flex flex-wrap items-center gap-3">
-                                    <h3 class="text-lg font-extrabold text-white">
-                                        {{ $service->name }}
+                                    <h3 class="text-xl font-extrabold text-white">
+                                        {{ $workshop->name }}
                                     </h3>
 
-                                    @if($service->status === 'activo')
-                                        <span class="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3 py-1 text-sm font-semibold text-cyan-300 border border-cyan-400/20">
+                                    @if($workshop->status == 'activo')
+                                        <span class="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-4 py-1.5 text-sm font-semibold text-cyan-300 border border-cyan-400/20">
                                             <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                                            Activo
+                                            Activa
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-300 border border-red-400/20">
+                                        <span class="inline-flex items-center gap-2 rounded-full bg-red-500/10 px-4 py-1.5 text-sm font-semibold text-red-300 border border-red-400/20">
                                             <span class="w-2 h-2 rounded-full bg-red-400"></span>
-                                            Inactivo
+                                            Inactiva
                                         </span>
                                     @endif
                                 </div>
 
-                                <p class="text-slate-300 mt-2 max-w-3xl">
-                                    {{ $service->description ?: 'Sin descripción registrada.' }}
-                                </p>
+                                <div class="mt-3 flex items-start gap-2 text-slate-300">
+                                    <span class="text-cyan-300 mt-0.5">
+                                        <x-admin.icon-location />
+                                    </span>
+
+                                    <span>
+                                        {{ $workshop->address }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 xl:w-[520px]">
 
-                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 px-5 py-3">
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
                                 <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
-                                    Duración
+                                    Contacto
                                 </p>
 
-                                <div class="mt-1 flex items-center gap-2 text-white font-semibold">
+                                <div class="mt-2 flex items-center gap-2 text-white">
                                     <span class="text-cyan-300">
-                                        <x-admin.icon-time />
+                                        <x-admin.icon-phone />
                                     </span>
 
-                                    {{ $service->estimated_minutes }} min
+                                    <span>
+                                        {{ $workshop->phone ?: 'No registrado' }}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div class="flex gap-3">
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Horario
+                                </p>
 
-                                <a href="{{ route('admin.services.show', $service) }}"
-                                   class="inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500/10 px-4 py-3 text-cyan-300 font-bold border border-cyan-400/20 hover:bg-cyan-500 hover:text-white transition">
-                                    <x-admin.icon-eye />
-                                    Ver
-                                </a>
+                                <div class="mt-2 flex items-start gap-2 text-white">
+                                    <span class="text-cyan-300 mt-0.5">
+                                        <x-admin.icon-clock />
+                                    </span>
 
-                                <a href="{{ route('admin.services.edit', $service) }}"
-                                   class="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-500/10 px-4 py-3 text-blue-300 font-bold border border-blue-400/20 hover:bg-blue-600 hover:text-white transition">
-                                    <x-admin.icon-edit />
-                                    Editar
-                                </a>
-
+                                    <span>
+                                        {{ $workshop->opening_hours ?: 'No definido' }}
+                                    </span>
+                                </div>
                             </div>
+
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row xl:flex-col gap-3 xl:w-32">
+
+                            <a href="{{ route('admin.workshops.show', $workshop) }}"
+                               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500/10 px-4 py-3 text-cyan-300 font-bold border border-cyan-400/20 hover:bg-cyan-500 hover:text-white transition">
+                                <x-admin.icon-eye />
+                                Ver
+                            </a>
+
+                            <a href="{{ route('admin.workshops.edit', $workshop) }}"
+                               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-500/10 px-4 py-3 text-blue-300 font-bold border border-blue-400/20 hover:bg-blue-600 hover:text-white transition">
+                                <x-admin.icon-edit />
+                                Editar
+                            </a>
 
                         </div>
 
@@ -216,15 +236,15 @@
 
                 <div class="px-6 py-14 text-center">
                     <div class="mx-auto w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 mb-4">
-                        <x-admin.icon-tool />
+                        <x-admin.icon-workshop />
                     </div>
 
                     <p class="text-white font-bold text-lg">
-                        No hay servicios registrados
+                        No hay sedes o talleres registrados
                     </p>
 
                     <p class="text-slate-300 mt-1">
-                        Registre un servicio para que los clientes puedan solicitar atención.
+                        Registre una sede para comenzar a organizar los puntos de atención.
                     </p>
                 </div>
 
@@ -233,7 +253,7 @@
         </div>
 
         <div class="px-6 py-4 text-white border-t border-cyan-400/10">
-            {{ $services->links() }}
+            {{ $workshops->links() }}
         </div>
 
     </div>

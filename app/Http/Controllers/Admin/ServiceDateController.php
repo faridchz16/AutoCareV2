@@ -78,6 +78,8 @@ class ServiceDateController extends Controller
                     ->with('error', 'La hora de inicio debe ser menor que la hora de fin.');
             }
 
+            $data['capacity'] = 1;
+
             ServiceDate::create($data);
 
             return redirect()
@@ -132,6 +134,8 @@ class ServiceDateController extends Controller
                     ->with('error', 'La hora de inicio debe ser menor que la hora de fin.');
             }
 
+            $data['capacity'] = 1;
+
             $serviceDate->update($data);
 
             return redirect()
@@ -152,7 +156,6 @@ class ServiceDateController extends Controller
             'available_date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required',
-            'capacity' => 'required|integer|min:1',
             'status' => 'required|in:disponible,reservado,no_disponible,cancelado',
         ];
     }
@@ -166,9 +169,6 @@ class ServiceDateController extends Controller
             'available_date.date' => 'Debe ingresar una fecha válida.',
             'start_time.required' => 'Debe ingresar la hora de inicio.',
             'end_time.required' => 'Debe ingresar la hora de fin.',
-            'capacity.required' => 'Debe ingresar la capacidad.',
-            'capacity.integer' => 'La capacidad debe ser un número entero.',
-            'capacity.min' => 'La capacidad debe ser como mínimo 1.',
             'status.required' => 'Debe seleccionar el estado de la fecha.',
             'status.in' => 'El estado seleccionado no es válido.',
         ];

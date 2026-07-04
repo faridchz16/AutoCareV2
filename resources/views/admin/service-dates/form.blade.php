@@ -25,11 +25,9 @@
         @error('service_type_id')
             <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
         @enderror
-
     </div>
 
     <div>
-
         <label class="block text-cyan-300 font-semibold mb-2">
             Fecha de atención
         </label>
@@ -43,11 +41,9 @@
         @error('available_date')
             <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
         @enderror
-
     </div>
 
     <div>
-
         <label class="block text-cyan-300 font-semibold mb-2">
             Hora de inicio
         </label>
@@ -61,11 +57,9 @@
         @error('start_time')
             <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
         @enderror
-
     </div>
 
     <div>
-
         <label class="block text-cyan-300 font-semibold mb-2">
             Hora de fin
         </label>
@@ -79,30 +73,9 @@
         @error('end_time')
             <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
         @enderror
-
     </div>
 
-    <div>
-
-        <label class="block text-cyan-300 font-semibold mb-2">
-            Capacidad
-        </label>
-
-        <input
-            type="number"
-            min="1"
-            name="capacity"
-            value="{{ old('capacity', $serviceDate->capacity ?? 1) }}"
-            class="w-full rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white px-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500">
-
-        @error('capacity')
-            <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
-        @enderror
-
-    </div>
-
-    <div>
-
+    <div class="md:col-span-2">
         <label class="block text-cyan-300 font-semibold mb-2">
             Estado
         </label>
@@ -111,23 +84,19 @@
             name="status"
             class="w-full rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white px-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500">
 
-            <option value="disponible"
-                @selected(old('status',$serviceDate->status ?? 'disponible')=='disponible')>
+            <option value="disponible" @selected(old('status',$serviceDate->status ?? 'disponible')=='disponible')>
                 Disponible
             </option>
 
-            <option value="reservado"
-                @selected(old('status',$serviceDate->status ?? '')=='reservado')>
+            <option value="reservado" @selected(old('status',$serviceDate->status ?? '')=='reservado')>
                 Reservado
             </option>
 
-            <option value="no_disponible"
-                @selected(old('status',$serviceDate->status ?? '')=='no_disponible')>
+            <option value="no_disponible" @selected(old('status',$serviceDate->status ?? '')=='no_disponible')>
                 No disponible
             </option>
 
-            <option value="cancelado"
-                @selected(old('status',$serviceDate->status ?? '')=='cancelado')>
+            <option value="cancelado" @selected(old('status',$serviceDate->status ?? '')=='cancelado')>
                 Cancelado
             </option>
 
@@ -136,7 +105,6 @@
         @error('status')
             <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
         @enderror
-
     </div>
 
 </div>
@@ -151,9 +119,7 @@
     <button
         type="submit"
         class="px-8 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-lg hover:scale-105 transition">
-
         Guardar fecha
-
     </button>
 
 </div>

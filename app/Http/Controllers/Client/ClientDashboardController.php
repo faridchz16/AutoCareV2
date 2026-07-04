@@ -17,7 +17,12 @@ class ClientDashboardController extends Controller
             ->count();
 
         $activeRequests = ServiceRequest::where('user_id', $userId)
-            ->whereNotIn('status', ['cancelado', 'listo'])
+            ->whereNotIn('status', [
+                'cancelado',
+                'listo',
+                'listo_para_recoger',
+                'validado_administrador'
+            ])
             ->count();
 
         $pendingPayments = ServiceRequest::where('user_id', $userId)
@@ -27,7 +32,7 @@ class ClientDashboardController extends Controller
         $nextRequest = ServiceRequest::with(['serviceType', 'serviceDate', 'paymentMethod', 'mechanic'])
             ->where('user_id', $userId)
             ->whereHas('serviceDate')
-            ->whereNotIn('status', ['cancelado', 'listo'])
+            ->whereNotIn('status', ['cancelado'])
             ->orderByDesc('created_at')
             ->first();
 

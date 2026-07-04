@@ -2,33 +2,36 @@
 
 @section('content')
 
-<div class="space-y-12">
+<div class="space-y-8">
 
-    <section class="rounded-[32px] bg-[#132b49]/80 border border-cyan-400/10 shadow-xl px-8 py-7 mb-6">
-
-        <div class="flex items-center justify-between w-full gap-8">
-
-            <div class="max-w-3xl">
+    <section class="rounded-[32px] bg-[#132b49]/80 border border-cyan-400/10 shadow-xl px-8 py-7">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div>
                 <p class="text-cyan-400 font-bold uppercase tracking-widest">
                     Centro del cliente
                 </p>
 
-                <h1 class="text-4xl font-extrabold text-white mt-2">
-                    Mis vehículos
-                </h1>
+                <div class="flex items-center gap-4 mt-2">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                        <x-admin.icon-dashboard />
+                    </div>
 
-                <p class="text-slate-300 mt-2">
-                    Consulte los vehículos registrados para utilizarlos al solicitar un mantenimiento.
+                    <h1 class="text-4xl font-extrabold text-white">
+                        Mis vehículos
+                    </h1>
+                </div>
+
+                <p class="text-slate-300 mt-3">
+                    Consulte y registre los vehículos que utilizará para solicitar mantenimientos.
                 </p>
             </div>
 
             <a href="{{ route('client.vehicles.create') }}"
-               class="flex-shrink-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white hover:scale-105 transition duration-300 shadow-lg shadow-cyan-900/30">
+               class="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white hover:scale-105 transition shadow-lg shadow-cyan-900/30">
+                <x-admin.icon-plus />
                 Registrar vehículo
             </a>
-
         </div>
-
     </section>
 
     @if(session('success'))
@@ -45,70 +48,118 @@
 
     <section class="rounded-[32px] bg-[#132b49]/90 border border-cyan-400/10 shadow-xl overflow-hidden">
 
-        <div class="px-8 py-5 border-b border-cyan-400/10">
-            <h2 class="text-2xl font-bold text-white">
-                Vehículos registrados
-            </h2>
+        <div class="px-8 py-5 border-b border-cyan-400/10 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                <x-admin.icon-dashboard />
+            </div>
 
-            <p class="text-slate-300 mt-1">
-                Esta información se usará únicamente para registrar solicitudes de mantenimiento.
-            </p>
+            <div>
+                <h2 class="text-2xl font-bold text-white">
+                    Vehículos registrados
+                </h2>
+
+                <p class="text-slate-300 mt-1">
+                    Esta información será usada al momento de solicitar una atención.
+                </p>
+            </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-full">
-                <thead class="bg-[#061a33]">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-cyan-300">Placa</th>
-                        <th class="px-6 py-4 text-left text-cyan-300">Tipo</th>
-                        <th class="px-6 py-4 text-left text-cyan-300">Marca</th>
-                        <th class="px-6 py-4 text-left text-cyan-300">Modelo</th>
-                        <th class="px-6 py-4 text-left text-cyan-300">Año</th>
-                        <th class="px-6 py-4 text-left text-cyan-300">Kilometraje</th>
-                    </tr>
-                </thead>
+        <div class="p-6 space-y-5">
 
-                <tbody class="divide-y divide-cyan-400/10">
+            @forelse($vehicles as $vehicle)
 
-                    @forelse($vehicles as $vehicle)
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-5 text-white font-semibold">
-                                {{ $vehicle->plate }}
-                            </td>
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6 hover:-translate-y-1 hover:border-cyan-400/30 hover:shadow-xl hover:shadow-cyan-900/20 transition">
 
-                            <td class="px-6 py-5 text-slate-300">
-                                {{ $vehicle->vehicleType->name ?? 'No registrado' }}
-                            </td>
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
 
-                            <td class="px-6 py-5 text-slate-300">
-                                {{ $vehicle->brand }}
-                            </td>
+                        <div class="flex items-start gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
+                                <x-admin.icon-dashboard />
+                            </div>
 
-                            <td class="px-6 py-5 text-slate-300">
-                                {{ $vehicle->model }}
-                            </td>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <h3 class="text-2xl font-extrabold text-white">
+                                        {{ $vehicle->brand }} {{ $vehicle->model }}
+                                    </h3>
 
-                            <td class="px-6 py-5 text-slate-300">
-                                {{ $vehicle->year ?? 'No registrado' }}
-                            </td>
+                                    <span class="inline-flex rounded-full bg-cyan-500/10 px-4 py-1.5 text-sm font-semibold text-cyan-300 border border-cyan-400/20">
+                                        Activo
+                                    </span>
+                                </div>
 
-                            <td class="px-6 py-5 text-slate-300">
-                                {{ $vehicle->current_mileage ? number_format($vehicle->current_mileage) . ' km' : 'No registrado' }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-300">
-                                Todavía no tiene vehículos registrados. Presione “Registrar vehículo” para comenzar.
-                            </td>
-                        </tr>
-                    @endforelse
+                                <p class="text-slate-300 mt-2">
+                                    Placa:
+                                    <span class="text-white font-bold">
+                                        {{ $vehicle->plate }}
+                                    </span>
+                                </p>
 
-                </tbody>
-            </table>
+                                <p class="text-slate-400 text-sm mt-1">
+                                    Tipo: {{ $vehicle->vehicleType->name ?? 'No registrado' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 xl:w-[720px]">
+
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Año
+                                </p>
+
+                                <p class="text-white font-semibold mt-2">
+                                    {{ $vehicle->year ?? 'No registrado' }}
+                                </p>
+                            </div>
+
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Color
+                                </p>
+
+                                <p class="text-white font-semibold mt-2">
+                                    {{ $vehicle->color ?? 'No registrado' }}
+                                </p>
+                            </div>
+
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Kilometraje
+                                </p>
+
+                                <p class="text-white font-semibold mt-2">
+                                    {{ $vehicle->current_mileage ? number_format($vehicle->current_mileage) . ' km' : 'No registrado' }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="px-6 py-16 text-center">
+                    <div class="mx-auto w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 mb-4">
+                        <x-admin.icon-dashboard />
+                    </div>
+
+                    <p class="text-white font-bold text-lg">
+                        Todavía no tiene vehículos registrados
+                    </p>
+
+                    <p class="text-slate-300 mt-1">
+                        Registre un vehículo para poder solicitar un mantenimiento.
+                    </p>
+                </div>
+
+            @endforelse
+
         </div>
 
-        <div class="px-6 py-5">
+        <div class="px-6 py-5 border-t border-cyan-400/10">
             {{ $vehicles->links() }}
         </div>
 

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
-use MercadoPago\Client\Preference\PreferenceClient;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\MercadoPagoConfig;
 
 class PaymentController extends Controller
@@ -16,14 +19,13 @@ class PaymentController extends Controller
                 'paymentMethod'
             ])
             ->where('user_id', auth()->id())
-            ->where('payment_status', 'pendiente')
             ->orderByDesc('created_at')
             ->paginate(8);
 
         return view('client.payments.index', compact('payments'));
     }
 
-    public function pay(ServiceRequest $serviceRequest)
+    public function checkout(ServiceRequest $serviceRequest)
     {
         if ($serviceRequest->user_id !== auth()->id()) {
             abort(403);
@@ -41,40 +43,96 @@ class PaymentController extends Controller
                 ->with('error', 'El monto del pago no es válido.');
         }
 
+        $publicKey = config('services.mercadopago.public_key');
+
+        return view('client.payments.checkout', compact(
+            'serviceRequest',
+            'publicKey'
+        ));
+    }
+
+    public function process(Request $request, ServiceRequest $serviceRequest)
+    {
+        if ($serviceRequest->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($serviceRequest->payment_status === 'pagado') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Este pago ya fue realizado.',
+                'redirect_url' => route('client.payments.success', $serviceRequest),
+            ]);
+        }
+
+        $data = $request->validate([
+            'token' => 'required|string',
+            'payment_method_id' => 'required|string',
+            'issuer_id' => 'nullable',
+            'installments' => 'required|integer|min:1',
+            'payer.email' => 'required|email',
+            'payer.identification.type' => 'nullable|string',
+            'payer.identification.number' => 'nullable|string',
+        ]);
+
         try {
             MercadoPagoConfig::setAccessToken(config('services.mercadopago.access_token'));
 
-            $client = new PreferenceClient();
+            $client = new PaymentClient();
 
-            $preference = $client->create([
-                'items' => [
-                    [
-                        'title' => $serviceRequest->serviceType->name ?? 'Servicio AutoCare',
-                        'quantity' => 1,
-                        'unit_price' => (float) $serviceRequest->amount,
-                        'currency_id' => 'PEN',
+            $requestOptions = new RequestOptions();
+            $requestOptions->setCustomHeaders([
+                'X-Idempotency-Key: ' . (string) Str::uuid(),
+            ]);
+
+            $paymentData = [
+                'transaction_amount' => (float) $serviceRequest->amount,
+                'token' => $data['token'],
+                'description' => $serviceRequest->serviceType->name ?? 'Servicio AutoCare',
+                'installments' => (int) $data['installments'],
+                'payment_method_id' => $data['payment_method_id'],
+                'payer' => [
+                    'email' => $data['payer']['email'],
+                    'identification' => [
+                        'type' => $data['payer']['identification']['type'] ?? 'DNI',
+                        'number' => $data['payer']['identification']['number'] ?? '12345678',
                     ],
                 ],
                 'external_reference' => (string) $serviceRequest->id,
-                'back_urls' => [
-                'success' => url('/cliente/payments/' . $serviceRequest->id . '/success'),
-                'failure' => url('/cliente/payments/' . $serviceRequest->id . '/failure'),
-                'pending' => url('/cliente/payments/' . $serviceRequest->id . '/pending'),
-            ],
-            ]);
+            ];
 
-            return redirect()->away($preference->init_point);
+            if (!empty($data['issuer_id'])) {
+                $paymentData['issuer_id'] = $data['issuer_id'];
+            }
+
+            $payment = $client->create($paymentData, $requestOptions);
+
+            if ($payment->status === 'approved') {
+                $serviceRequest->update([
+                    'payment_status' => 'pagado',
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pago aprobado correctamente.',
+                    'redirect_url' => route('client.payments.success', $serviceRequest),
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'El pago quedó en estado: ' . $payment->status,
+                'redirect_url' => route('client.payments.pending', $serviceRequest),
+            ]);
 
         } catch (\Exception $e) {
-            dd([
-                'mensaje' => $e->getMessage(),
-                'clase' => get_class($e),
-                'codigo' => $e->getCode(),
-                'archivo' => $e->getFile(),
-                'linea' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-}
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
     }
 
     public function success(ServiceRequest $serviceRequest)

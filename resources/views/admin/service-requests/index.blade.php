@@ -9,12 +9,18 @@
             Centro administrativo
         </p>
 
-        <h1 class="text-4xl font-extrabold text-white mt-2">
-            Solicitudes de atención
-        </h1>
+        <div class="flex items-center gap-4 mt-2">
+            <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                <x-admin.icon-clipboard />
+            </div>
 
-        <p class="text-slate-300 mt-2">
-            Supervise las solicitudes registradas por los clientes, asigne mecánicos, valide pagos y controle el estado del servicio.
+            <h1 class="text-4xl font-extrabold text-white">
+                Solicitudes de atención
+            </h1>
+        </div>
+
+        <p class="text-slate-300 mt-3">
+            Supervise las solicitudes registradas, asigne mecánicos y controle el estado de cada servicio.
         </p>
     </div>
 
@@ -34,27 +40,27 @@
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <p class="text-slate-300">Total solicitudes</p>
-            <h2 class="text-5xl font-extrabold text-white mt-2">{{ $totalRequests }}</h2>
+            <h2 class="text-5xl font-extrabold text-white mt-3">{{ $totalRequests }}</h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <p class="text-slate-300">Pendientes</p>
-            <h2 class="text-5xl font-extrabold text-cyan-300 mt-2">{{ $pendingRequests }}</h2>
+            <h2 class="text-5xl font-extrabold text-cyan-300 mt-3">{{ $pendingRequests }}</h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <p class="text-slate-300">En proceso</p>
-            <h2 class="text-5xl font-extrabold text-sky-300 mt-2">{{ $processRequests }}</h2>
+            <h2 class="text-5xl font-extrabold text-sky-300 mt-3">{{ $processRequests }}</h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <p class="text-slate-300">Listas para recoger</p>
-            <h2 class="text-5xl font-extrabold text-teal-300 mt-2">{{ $readyRequests }}</h2>
+            <h2 class="text-5xl font-extrabold text-teal-300 mt-3">{{ $readyRequests }}</h2>
         </div>
 
         <div class="rounded-3xl bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl">
             <p class="text-slate-300">Pagos pendientes</p>
-            <h2 class="text-5xl font-extrabold text-blue-300 mt-2">{{ $pendingPayments }}</h2>
+            <h2 class="text-5xl font-extrabold text-blue-300 mt-3">{{ $pendingPayments }}</h2>
         </div>
 
     </div>
@@ -63,11 +69,17 @@
           action="{{ route('admin.service-requests.index') }}"
           class="rounded-[28px] bg-[#132b49]/90 border border-cyan-400/10 p-6 shadow-xl grid grid-cols-1 xl:grid-cols-5 gap-4">
 
-        <input type="text"
-               name="search"
-               value="{{ request('search') }}"
-               placeholder="Buscar cliente, placa, vehículo o servicio..."
-               class="xl:col-span-2 rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white placeholder-slate-400 px-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500">
+        <div class="relative xl:col-span-2">
+            <div class="absolute left-5 top-1/2 -translate-y-1/2 text-cyan-300">
+                <x-admin.icon-search />
+            </div>
+
+            <input type="text"
+                   name="search"
+                   value="{{ request('search') }}"
+                   placeholder="Buscar cliente, placa, vehículo o servicio..."
+                   class="w-full rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white placeholder-slate-400 pl-14 pr-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
 
         <select name="status"
                 class="rounded-2xl bg-[#0c223d] border border-cyan-500/20 text-white px-5 py-3 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500">
@@ -94,7 +106,8 @@
 
         <div class="flex gap-3">
             <button type="submit"
-                    class="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-white font-bold hover:scale-105 transition">
+                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-white font-bold hover:scale-105 transition">
+                <x-admin.icon-search />
                 Buscar
             </button>
 
@@ -107,75 +120,124 @@
     </form>
 
     <div class="rounded-[28px] bg-[#132b49]/90 border border-cyan-400/10 shadow-xl overflow-hidden">
-        <div class="px-6 py-5 border-b border-cyan-400/10">
-            <h2 class="text-xl font-bold text-white">
-                Atenciones registradas
-            </h2>
 
-            <p class="text-sm text-slate-300 mt-1"></p>
+        <div class="px-6 py-5 border-b border-cyan-400/10 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300">
+                <x-admin.icon-clipboard />
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold text-white">
+                    Atenciones registradas
+                </h2>
+
+                <p class="text-sm text-slate-300 mt-1">
+                    Listado de solicitudes registradas por los clientes.
+                </p>
+            </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[1400px]">
-                <thead class="bg-[#061a33] text-cyan-300">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Cliente</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Vehículo</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Servicio</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Fecha y hora</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Forma de pago</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Estado del pago</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Mecánico</th>
-                        <th class="px-6 py-4 text-left text-sm font-bold">Estado del servicio</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold">Acción</th>
-                    </tr>
-                </thead>
+        <div class="p-6 space-y-5">
 
-                <tbody class="divide-y divide-cyan-400/10">
-                    @forelse($requests as $request)
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-semibold text-white">
-                                {{ $request->customer->name ?? 'Cliente no disponible' }}
-                            </td>
+            @forelse($requests as $request)
 
-                            <td class="px-6 py-4 text-slate-300">
-                                {{ $request->vehicle_brand }} {{ $request->vehicle_model }}
-                                <span class="block text-sm text-slate-400">
-                                    Placa: {{ $request->vehicle_plate }}
-                                </span>
-                            </td>
+                @php
+                    $paymentStatusText = [
+                        'pendiente' => 'Pendiente',
+                        'pagado' => 'Pagado',
+                        'validado' => 'Validado',
+                        'observado' => 'Observado',
+                        'reembolsado' => 'Reembolsado',
+                    ][$request->payment_status ?? 'pendiente'] ?? 'Pendiente';
 
-                            <td class="px-6 py-4 text-slate-300">
-                                {{ $request->serviceType->name ?? 'Servicio no disponible' }}
-                            </td>
+                    $serviceStatusText = [
+                        'pendiente' => 'Pendiente',
+                        'confirmado' => 'Confirmado',
+                        'en_taller' => 'En taller',
+                        'en_proceso' => 'En proceso',
+                        'finalizado_mecanico' => 'Finalizado por mecánico',
+                        'validado_administrador' => 'Validado por administrador',
+                        'listo_para_recoger' => 'Listo para recoger',
+                        'cancelado' => 'Cancelado',
+                    ][$request->status] ?? str_replace('_', ' ', ucfirst($request->status));
+                @endphp
 
-                            <td class="px-6 py-4 text-slate-300">
-                                @if($request->serviceDate)
-                                    {{ \Carbon\Carbon::parse($request->serviceDate->available_date)->format('d/m/Y') }}
-                                    <span class="block text-sm text-slate-400">
-                                        {{ substr($request->serviceDate->start_time, 0, 5) }} - {{ substr($request->serviceDate->end_time, 0, 5) }}
+                <div class="rounded-3xl bg-[#082344]/90 border border-cyan-400/10 p-6 hover:-translate-y-1 hover:border-cyan-400/30 hover:shadow-xl hover:shadow-cyan-900/20 transition">
+
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 shrink-0">
+                                <x-admin.icon-tool />
+                            </div>
+
+                            <div>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <h3 class="text-xl font-extrabold text-white">
+                                        {{ $request->serviceType->name ?? 'Servicio no disponible' }}
+                                    </h3>
+
+                                    <span class="inline-flex rounded-full px-4 py-1.5 text-sm font-semibold border
+                                        @if($request->status === 'pendiente') bg-cyan-500/10 text-cyan-300 border-cyan-400/20
+                                        @elseif($request->status === 'confirmado') bg-blue-500/10 text-blue-300 border-blue-400/20
+                                        @elseif($request->status === 'en_taller') bg-sky-500/10 text-sky-300 border-sky-400/20
+                                        @elseif($request->status === 'en_proceso') bg-blue-500/10 text-blue-300 border-blue-400/20
+                                        @elseif($request->status === 'finalizado_mecanico') bg-teal-500/10 text-teal-300 border-teal-400/20
+                                        @elseif($request->status === 'validado_administrador') bg-teal-500/10 text-teal-300 border-teal-400/20
+                                        @elseif($request->status === 'listo_para_recoger') bg-teal-500/10 text-teal-300 border-teal-400/20
+                                        @elseif($request->status === 'cancelado') bg-red-500/10 text-red-300 border-red-400/20
+                                        @else bg-slate-500/10 text-slate-300 border-slate-400/20
+                                        @endif">
+                                        {{ $serviceStatusText }}
                                     </span>
+                                </div>
+
+                                <p class="text-slate-300 mt-2">
+                                    Cliente:
+                                    <span class="text-white font-semibold">
+                                        {{ $request->customer->name ?? 'Cliente no disponible' }}
+                                    </span>
+                                </p>
+
+                                <p class="text-slate-400 text-sm mt-1">
+                                    Vehículo: {{ $request->vehicle_brand }} {{ $request->vehicle_model }}
+                                    · Placa: {{ $request->vehicle_plate }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 xl:w-[920px]">
+
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Fecha y hora
+                                </p>
+
+                                @if($request->serviceDate)
+                                    <p class="text-white font-semibold mt-2">
+                                        {{ \Carbon\Carbon::parse($request->serviceDate->available_date)->format('d/m/Y') }}
+                                    </p>
+
+                                    <p class="text-slate-400 text-sm mt-1">
+                                        {{ substr($request->serviceDate->start_time, 0, 5) }}
+                                        -
+                                        {{ substr($request->serviceDate->end_time, 0, 5) }}
+                                    </p>
                                 @else
-                                    Fecha no disponible
+                                    <p class="text-slate-300 mt-2">Fecha no disponible</p>
                                 @endif
-                            </td>
+                            </div>
 
-                            <td class="px-6 py-4 text-slate-300">
-                                {{ $request->paymentMethod->name ?? 'No registrada' }}
-                            </td>
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Pago
+                                </p>
 
-                            <td class="px-6 py-4">
-                                @php
-                                    $paymentStatusText = [
-                                        'pendiente' => 'Pendiente',
-                                        'pagado' => 'Pagado',
-                                        'validado' => 'Validado',
-                                        'observado' => 'Observado',
-                                        'reembolsado' => 'Reembolsado',
-                                    ][$request->payment_status ?? 'pendiente'] ?? 'Pendiente';
-                                @endphp
+                                <p class="text-white font-semibold mt-2">
+                                    {{ $request->paymentMethod->name ?? 'No registrado' }}
+                                </p>
 
-                                <span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold border
+                                <span class="inline-flex mt-2 rounded-full px-3 py-1 text-sm font-semibold border
                                     @if(($request->payment_status ?? 'pendiente') === 'pendiente') bg-cyan-500/10 text-cyan-300 border-cyan-400/20
                                     @elseif($request->payment_status === 'pagado') bg-blue-500/10 text-blue-300 border-blue-400/20
                                     @elseif($request->payment_status === 'validado') bg-teal-500/10 text-teal-300 border-teal-400/20
@@ -185,65 +247,68 @@
                                     @endif">
                                     {{ $paymentStatusText }}
                                 </span>
-                            </td>
+                            </div>
 
-                            <td class="px-6 py-4 text-slate-300">
-                                {{ $request->mechanic->name ?? 'Sin asignar' }}
-                            </td>
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Mecánico
+                                </p>
 
-                            <td class="px-6 py-4">
-                                @php
-                                    $serviceStatusText = [
-                                        'pendiente' => 'Pendiente',
-                                        'confirmado' => 'Confirmado',
-                                        'en_taller' => 'En taller',
-                                        'en_proceso' => 'En proceso',
-                                        'finalizado_mecanico' => 'Finalizado por mecánico',
-                                        'validado_administrador' => 'Validado por administrador',
-                                        'listo_para_recoger' => 'Listo para recoger',
-                                        'cancelado' => 'Cancelado',
-                                    ][$request->status] ?? str_replace('_', ' ', ucfirst($request->status));
-                                @endphp
+                                <p class="text-white font-semibold mt-2">
+                                    {{ $request->mechanic->name ?? 'Sin asignar' }}
+                                </p>
+                            </div>
 
-                                <span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold border
-                                    @if($request->status === 'pendiente') bg-cyan-500/10 text-cyan-300 border-cyan-400/20
-                                    @elseif($request->status === 'confirmado') bg-blue-500/10 text-blue-300 border-blue-400/20
-                                    @elseif($request->status === 'en_taller') bg-sky-500/10 text-sky-300 border-sky-400/20
-                                    @elseif($request->status === 'en_proceso') bg-blue-500/10 text-blue-300 border-blue-400/20
-                                    @elseif($request->status === 'finalizado_mecanico') bg-teal-500/10 text-teal-300 border-teal-400/20
-                                    @elseif($request->status === 'validado_administrador') bg-teal-500/10 text-teal-300 border-teal-400/20
-                                    @elseif($request->status === 'listo_para_recoger') bg-teal-500/10 text-teal-300 border-teal-400/20
-                                    @elseif($request->status === 'cancelado') bg-red-500/10 text-red-300 border-red-400/20
-                                    @else bg-slate-500/10 text-slate-300 border-slate-400/20
-                                    @endif">
-                                    {{ $serviceStatusText }}
-                                </span>
-                            </td>
+                            <div class="rounded-2xl bg-[#0c223d] border border-cyan-400/10 p-4">
+                                <p class="text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                                    Monto
+                                </p>
 
-                            <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.service-requests.show', $request) }}"
-                                   class="rounded-xl bg-cyan-500/10 px-4 py-2 text-cyan-300 font-semibold border border-cyan-400/20 hover:bg-cyan-500 hover:text-white transition">
-                                    Ver detalle
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="px-6 py-16 text-center text-slate-300">
-                                Aún no existen solicitudes de atención registradas. Las solicitudes aparecerán aquí cuando los clientes soliciten un mantenimiento.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                <p class="text-white font-semibold mt-2">
+                                    S/. {{ number_format($request->amount ?? 0, 2) }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="xl:w-40">
+                            <a href="{{ route('admin.service-requests.show', $request) }}"
+                               class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500/10 px-5 py-3 text-cyan-300 font-bold border border-cyan-400/20 hover:bg-cyan-500 hover:text-white transition">
+                                <x-admin.icon-eye />
+                                Ver detalle
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="px-6 py-16 text-center">
+                    <div class="mx-auto w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 mb-4">
+                        <x-admin.icon-clipboard />
+                    </div>
+
+                    <p class="text-white font-bold text-lg">
+                        No existen solicitudes registradas
+                    </p>
+
+                    <p class="text-slate-300 mt-1">
+                        Las solicitudes aparecerán aquí cuando los clientes registren un mantenimiento.
+                    </p>
+                </div>
+
+            @endforelse
+
         </div>
 
-        <div class="px-6 py-4 text-white">
+        <div class="px-6 py-4 text-white border-t border-cyan-400/10">
             {{ $requests->links() }}
         </div>
+
     </div>
 
 </div>
 
 @endsection
-
